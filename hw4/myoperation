@@ -1,0 +1,25 @@
+Script started on Thu Nov  7 14:25:33 2024
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cpp ./hello.c > main.c
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ /usr/lib/i386-linux-gnu/gcc/i686-linux-gnu/4.5/cc1 main.c
+ main
+Analyzing compilation unit
+Performing interprocedural optimizations
+ <*free_lang_data> <visibility> <early_local_cleanups> <whole-program> <inline>Assembling functions:
+ main
+Execution times (seconds)
+ TOTAL                 :   0.00             0.00             0.01                747 kB
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh main.s
+-rw-r--r-- 1 41147011S telnet 468 Nov  7  2024 main.s
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ as -o main.o main.s
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh main.o
+-rw-r--r-- 1 41147011S telnet 884 Nov  7  2024 main.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ld -o main.out /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/i386-linux-gnu/gcc/i686-linux-gnu/4.5/crt begin.o ./main.o -lc -lgcc -lgcc_s /usr/lib/i386-linux-gnu/gcc/i686-linux-gnu/4.5/crtend.o /usr/lib/crtn.o -L /usr/lib/i386-linux-gn u/gcc/i686-linux-gnu/4.5 -L /ust/i686-pc-linux-gnu/lib -L /usr/lib/ -dynamic-linker /lib/Id-linux.so.2
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh main.out
+-rwxr-xr-x 1 41147011S telnet 4.3K Nov  7  2024 [0m[01;32mmain.out[0m
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc hello.c -o hello
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh hello
+-rwxr-xr-x 1 41147011S telnet 7.0K Nov  7  2024 [0m[01;32mhello[0m
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ exit
+exit
+
+Script done on Thu Nov  7 14:26:45 2024

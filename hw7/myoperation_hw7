@@ -1,0 +1,95 @@
+Script started on Thu Nov 28 18:42:45 2024
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ exitcat result.txt[2P./wc_programcat result.txt[2P./wc_programgcc -o wc_program wc_program.c[15Pcat example.txtexit[Kcat example.txtgcc -o wc_program wc_program.c[18P./wc_programcat result.txtexit[K[Kexitcat result.txt[2P./wc_programcat result.txt[K[K[K[K[K[K[K[K[K[Kwc_program.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main() {
+    char filename[100];
+    printf("請輸入檔案名稱：");
+    scanf("%s", filename);
+
+    // 開啟要分析的檔案
+    int input_fd = open(filename, O_RDONLY);
+    if (input_fd < 0) {
+        perror("無法開啟檔案");
+        return 1;
+    }
+
+    // 創建儲存結果的檔案
+    int output_fd = open("result.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (output_fd < 0) {
+        perror("無法創建結果檔案");
+        close(input_fd);
+        return 1;
+    }
+
+    // 使用 fork() 創建子程序
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork 錯誤");
+        close(input_fd);
+        close(output_fd);
+        return 1;
+    }
+
+    if (pid == 0) { 
+        // 子程序：執行 `wc` 指令
+        dup2(input_fd, STDIN_FILENO);   // 將標準輸入重定向到要分析的檔案
+        dup2(output_fd, STDOUT_FILENO); // 將標準輸出重定向到結果檔案
+
+        close(input_fd);
+        close(output_fd);
+
+        // 執行 wc 指令
+        execlp("wc", "wc", (char *)NULL);
+
+        // 如果 execlp 執行失敗
+        perror("執行 wc 錯誤");
+        exit(1);
+    } else { 
+        // 主程序：等待子程序結束
+        wait(NULL);
+
+        // 關閉文件描述符
+        close(input_fd);
+        close(output_fd);
+
+        // 讀取結果檔案並顯示內容
+        int result_fd = open("result.txt", O_RDONLY);
+        if (result_fd < 0) {
+            perror("無法開啟結果檔案");
+            return 1;
+        }
+
+        char buffer[1024];
+        ssize_t bytes_read;
+        printf("結果為：\n");
+        while ((bytes_read = read(result_fd, buffer, sizeof(buffer) - 1)) > 0) {
+            buffer[bytes_read] = '\0';
+            printf("%s", buffer);
+        }
+
+        close(result_fd);
+    }
+
+    return 0;
+}
+
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat wc_program.cexit[Kcat result.txt[2P./wc_programgcc -o wc_program wc_program.c[15Pcat example.txt
+Hello world
+This is a test file
+
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -o wc_program wc_program.c
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ./wc_program
+請輸入檔案名稱：example.txt
+結果為：
+ 3  7 33
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat result.txt
+ 3  7 33
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ exit
+exit
+
+Script done on Thu Nov 28 18:44:20 2024

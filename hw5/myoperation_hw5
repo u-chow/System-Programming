@@ -1,0 +1,31 @@
+Script started on Sun Nov 10 17:56:37 2024
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -c hello.c -o hello.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ar rcs libhello.a hello.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -fPIC -c hello.c -o hello.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -shared -o libhello.so hello.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh libhello.a
+-rw-r--r-- 1 41147011S telnet 1.1K Nov 10 17:57 libhello.a
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh libhello.so
+-rwxr-xr-x 1 41147011S telnet 6.6K Nov 10 17:57 [0m[01;32mlibhello.so[0m
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh hello.o
+-rw-r--r-- 1 41147011S telnet 1.2K Nov 10 17:57 hello.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat extra.c
+#include <stdio.h>
+
+void extra_function()
+{
+    printf("Hello from extra_function in extra.c!\n");
+}
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -c extra.c -o extra.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ar rcs libhello.a hello.o extra.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -shared -o libhello.so hello.o extra.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh libhello.a
+-rw-r--r-- 1 41147011S telnet 2.3K Nov 10 17:58 libhello.a
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh libhello.so
+-rwxr-xr-x 1 41147011S telnet 6.6K Nov 10 17:58 [0m[01;32mlibhello.so[0m
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ls -lh hello.o
+-rw-r--r-- 1 41147011S telnet 1.2K Nov 10 17:57 hello.o
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ exit
+exit
+
+Script done on Sun Nov 10 17:59:26 2024

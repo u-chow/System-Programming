@@ -1,0 +1,96 @@
+Script started on Tue Dec  3 10:54:59 2024
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat signal_uptime_who.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+
+pid_t child_pid;
+
+// Child process executes commands
+void execute_commands() {
+    printf("Executing uptime and who commands...\n");
+    if (fork() == 0) {
+        // Execute uptime
+        execlp("uptime", "uptime", (char *)NULL);
+        perror("Failed to execute uptime");
+        exit(1);
+    }
+    wait(NULL); // Wait for uptime to complete
+    if (fork() == 0) {
+        // Execute who
+        execlp("who", "who", (char *)NULL);
+        perror("Failed to execute who");
+        exit(1);
+    }
+    wait(NULL); // Wait for who to complete
+}
+
+// Handle SIGINT signal
+void handle_sigint(int sig) {
+    printf("\nReceived SIGINT (CTRL-C), executing child process commands...\n");
+    execute_commands();
+}
+
+// Main program
+int main() {
+    signal(SIGINT, handle_sigint); // Set SIGINT handler
+
+    printf("Program is running. Press CTRL-C to execute commands or wait 10 seconds for automatic execution.\n");
+
+    while (1) {
+        sleep(10); // Execute every 10 seconds
+        printf("10 seconds elapsed, executing child process commands...\n");
+        execute_commands();
+    }
+
+    return 0;
+}
+
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ gcc -o signal_uptime_who signal_uptime_who.c
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ./signal_uptime_who
+Program is running. Press CTRL-C to execute commands or wait 10 seconds for automatic execution.
+10 seconds elapsed, executing child process commands...
+Executing uptime and who commands...
+ 10:55:36 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+10 seconds elapsed, executing child process commands...
+Executing uptime and who commands...
+ 10:55:46 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+^C
+Received SIGINT (CTRL-C), executing child process commands...
+Executing uptime and who commands...
+ 10:55:51 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+10 seconds elapsed, executing child process commands...
+Executing uptime and who commands...
+ 10:55:51 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+^C
+Received SIGINT (CTRL-C), executing child process commands...
+Executing uptime and who commands...
+ 10:55:53 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+10 seconds elapsed, executing child process commands...
+Executing uptime and who commands...
+ 10:55:53 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+^C
+Received SIGINT (CTRL-C), executing child process commands...
+Executing uptime and who commands...
+ 10:55:53 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+10 seconds elapsed, executing child process commands...
+Executing uptime and who commands...
+ 10:55:53 up 7 days, 17:39,  1 user,  load average: 0.00, 0.01, 0.05
+41147011S pts/0        Dec  3 10:50 (140.122.136.182)
+^Z
+[1]+  Stopped                 ./signal_uptime_who
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ exit
+exit
+
+Script done on Tue Dec  3 10:57:09 2024

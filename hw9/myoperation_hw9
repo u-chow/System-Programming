@@ -1,0 +1,86 @@
+Script started on Thu Dec 12 03:26:18 2024
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat ps_grep_wc.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    int pipe1[2], pipe2[2];
+
+    if (pipe(pipe1) == -1 || pipe(pipe2) == -1) {
+        perror("pipe");
+        exit(1);
+    }
+
+    if (fork() == 0) {
+        close(pipe1[0]);
+        dup2(pipe1[1], STDOUT_FILENO);
+        close(pipe1[1]);
+
+        close(pipe2[0]);
+        close(pipe2[1]);
+
+        execlp("ps", "ps", "aux", NULL);
+        perror("execlp ps");
+        exit(1);
+    }
+
+    if (fork() == 0) {
+        close(pipe1[1]);
+        dup2(pipe1[0], STDIN_FILENO);
+        close(pipe1[0]);
+
+        close(pipe2[0]);
+        dup2(pipe2[1], STDOUT_FILENO);
+        close(pipe2[1]);
+
+        execlp("grep", "grep", "41147011S", NULL);
+        perror("execlp grep");
+        exit(1);
+    }
+
+    if (fork() == 0) {
+        close(pipe2[1]);
+        dup2(pipe2[0], STDIN_FILENO);
+        close(pipe2[0]);
+
+        int output_fd = open("the_result", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (output_fd == -1) {
+            perror("open");
+            exit(1);
+        }
+        dup2(output_fd, STDOUT_FILENO);
+        close(output_fd);
+
+        close(pipe1[0]);
+        close(pipe1[1]);
+
+        execlp("wc", "wc", NULL);
+        perror("execlp wc");
+        exit(1);
+    }
+
+    close(pipe1[0]);
+    close(pipe1[1]);
+    close(pipe2[0]);
+    close(pipe2[1]);
+
+    while (wait(NULL) > 0);
+
+    return 0;
+}
+
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat ps_grep_wc.cexit[Kscript myoperation_hw8clear[Kscript myoperation_hw8clear[K[3Plsclear./signal_uptime_whogcc -o signal_uptime_who signal_uptime_who.c[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[25P./signal_uptime_whoclear[K[3Plsclearscript myoperation_hw8clear[Kscript myoperation_hw8exit[Kcat ps_grep_wc.c[Kcat ps_grep_wc.cexit[Kscript myoperation_hw8clear[Kscript myoperation_hw8clear[K[3Plsclear./signal_uptime_whogcc -o signal_uptime_who signal_uptime_who.c[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[21Pvim[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cclear[K[3Plsclearvim signal_uptime_who.c[21@gcc -o signal_uptime_who[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[25P./signal_uptime_whoclear[K[3Plsclearscript myoperation_hw8clear[Kscript myoperation_hw8exit[Kcat ps_grep_wc.c[Kgcc -o ps_grep_wc ps_grep_wc.c
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ./ps_grep_wc
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ cat the_result
+      3      37     255
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ps aux | grep your_username | wc > the_result[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1@4[1@1[1@1[1@4[1@7[1@0[1@1[1@1[1@S[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C1
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ ps aux | grep 41147011S | wc > the_result1[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[28Pcat the_result1
+      3      38     268
+]0;41147011S@telnet: ~/SystemSoftware41147011S@telnet:~/SystemSoftware$ exit
+exit
+
+Script done on Thu Dec 12 03:28:45 2024
